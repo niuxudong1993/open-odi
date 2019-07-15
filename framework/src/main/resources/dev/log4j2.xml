@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- status : 指定log4j本身的打印日志的级别.ALL< Trace < DEBUG < INFO < WARN < ERROR < FATAL < OFF。 monitorInterval : 用于指定log4j自动重新配置的监测间隔时间，单位是s,最小是5s. -->
+<Configuration status="WARN" packages="com.zq.test.append" monitorInterval="30">
+    <Properties>
+        <!-- 配置日志文件输出目录 ${sys:user.home} -->
+        <Property name="log.dir">${sys:cafe.log.dir}</Property>
+        <Property name="log.level">${sys:cafe.log.level}</Property>
+        <property name="pattern">%d{yyyy-MM-dd HH:mm:ss.SSS} [%t-%L] %-5level %logger{36} : [%msg] From: user:
+            %X{userName} , company code: %X{companyCode} IP: %X{clientIP}%n
+        </property>
+    </Properties>
+
+    <Appenders>
+        <!--这个输出控制台的配置 -->
+        <Console name="allConsole" target="SYSTEM_OUT">
+            <!-- 控制台只输出level及以上级别的信息(onMatch),其他的直接拒绝(onMismatch)
+            <ThresholdFilter level="${log.level}" onMatch="ACCEPT" onMismatch="DENY" /> -->
+            <!-- 输出日志的格式 -->
+            <!-- %d{yyyy-MM-dd HH:mm:ss, SSS} : 日志生产时间 %p : 日志输出格式 %c : logger的名称 %m : 日志内容，即 logger.info("message") %n : 换行符 %C : Java类名 %L : 日志输出所在行数 %M : 日志输出所在方法名 hostName : 本地机器名 hostAddress : 本地ip地址 -->
+            <PatternLayout pattern="${pattern}"/>
+        </Console>
+
+        <!-- 这个会打印出所有的info及以下级别的信息，每次大小超过size， 则这size大小的日志会自动存入按年份-月份建立的文件夹下面并进行压缩，作为存档 -->
+        <RollingFile name="allFile" fileName="${log.dir}/blj-management-all.log"
+                     filePattern="${log.dir}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+            <ThresholdFilter level="${log.level}" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${pattern}"/>
+            <Policies>
+                <!-- 基于时间的滚动策略，interval属性用来指定多久滚动一次，默认是1 hour。 modulate=true用来调整时间：比如现在是早上3am，interval是4，那么第一次滚动是在4am，接着是8am，12am...而不是7am. -->
+                <!-- 关键点在于 filePattern后的日期格式，以及TimeBasedTriggeringPolicy的interval， 日期格式精确到哪一位，interval也精确到哪一个单位 -->
+                <!-- log4j2的按天分日志文件 : info-%d{yyyy-MM-dd}-%i.log -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <!-- SizeBasedTriggeringPolicy:Policies子节点， 基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小. -->
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- eldf 日志文件输出配置 -->
+        <RollingFile name="eldfAppender" fileName="${log.dir}/blj-management-cafe.log"
+                     filePattern="${log.dir}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+            <ThresholdFilter level="${log.level}" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${pattern}"/>
+            <Policies>
+                <!-- 基于时间的滚动策略，interval属性用来指定多久滚动一次，默认是1 hour。 modulate=true用来调整时间：比如现在是早上3am，interval是4，那么第一次滚动是在4am，接着是8am，12am...而不是7am. -->
+                <!-- 关键点在于 filePattern后的日期格式，以及TimeBasedTriggeringPolicy的interval， 日期格式精确到哪一位，interval也精确到哪一个单位 -->
+                <!-- log4j2的按天分日志文件 : info-%d{yyyy-MM-dd}-%i.log -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <!-- SizeBasedTriggeringPolicy:Policies子节点， 基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小. -->
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+        </RollingFile>
+
+        <!-- spring 日志文件输出配置 -->
+        <RollingFile name="springAppender" fileName="${log.dir}/blj-management-spring.log"
+                     filePattern="${log.dir}/$${date:yyyy-MM}/info-%d{yyyy-MM-dd}-%i.log">
+            <!--控制台只输出level及以上级别的信息（onMatch），其他的直接拒绝（onMismatch） -->
+            <ThresholdFilter level="${log.level}" onMatch="ACCEPT" onMismatch="DENY"/>
+            <PatternLayout pattern="${pattern}"/>
+            <Policies>
+                <!-- 基于时间的滚动策略，interval属性用来指定多久滚动一次，默认是1 hour。 modulate=true用来调整时间：比如现在是早上3am，interval是4，那么第一次滚动是在4am，接着是8am，12am...而不是7am. -->
+                <!-- 关键点在于 filePattern后的日期格式，以及TimeBasedTriggeringPolicy的interval， 日期格式精确到哪一位，interval也精确到哪一个单位 -->
+                <!-- log4j2的按天分日志文件 : info-%d{yyyy-MM-dd}-%i.log -->
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+                <!-- SizeBasedTriggeringPolicy:Policies子节点， 基于指定文件大小的滚动策略，size属性用来定义每个日志文件的大小. -->
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+        </RollingFile>
+
+
+    </Appenders>
+
+    <!--然后定义logger，只有定义了logger并引入的appender，appender才会生效 -->
+    <Loggers>
+        <Logger name="tk.mybatis" level="debug" additivity="false">
+            <AppenderRef ref="allConsole"/>
+            <AppenderRef ref="eldfAppender"/>
+        </Logger>
+        <Logger name="com.nio.pqa.aar" level="debug" additivity="false">
+            <AppenderRef ref="allConsole"/>
+            <AppenderRef ref="eldfAppender"/>
+        </Logger>
+        <Logger name="com.efast.cafe.commponent.query" level="debug" additivity="false">
+            <AppenderRef ref="allConsole"/>
+            <AppenderRef ref="eldfAppender"/>
+        </Logger>
+        <!--过滤掉spring和mybatis的一些无用的DEBUG信息 -->
+        <logger name="org.mybatis" level="debug" additivity="false">
+            <AppenderRef ref="allConsole"/>
+            <AppenderRef ref="allFile"/>
+        </logger>
+        <!-- <logger name="org.springframework" level="debug" additivity="false">
+            <AppenderRef ref="springAppender" />
+            <AppenderRef ref="allConsole" />
+        </logger> -->
+
+
+        <!-- 配置日志的根节点 -->
+        <root level="INFO">
+            <!-- XXX:此处需要注意,配过logger的就不要在这里配置了 -->
+            <appender-ref ref="allConsole"/>
+            <appender-ref ref="allFile"/>
+        </root>
+    </Loggers>
+
+</Configuration>

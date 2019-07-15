@@ -1,0 +1,3 @@
+com\spring\odi\query\remote\common\main.class
+com\spring\odi\query\remote\common\bean\TestBean.class
+com\spring\odi\query\remote\common\service\TestService3.class
